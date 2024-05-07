@@ -6,6 +6,15 @@ import './App.css'
 function App() {
   const [count, setCount] = useState(0)
 
+  const uploadFile = async (file: File) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    const response = await fetch('http://localhost:8080/', {
+      method: 'POST',
+      body: formData,
+    })
+    console.log(response)
+  }
   return (
     <>
       <div>
@@ -25,6 +34,7 @@ function App() {
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
       </div>
+      <input type="file" onChange={(e) => uploadFile(e.target.files![0])} />
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
