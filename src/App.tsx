@@ -1,7 +1,11 @@
 import {useState} from 'react'
 import './App.css'
+import {api} from "./Api.tsx";
+import {useNavigate} from "react-router-dom";
 
 function App() {
+  const navigate = useNavigate();
+
   const [imageFile, setImageFile] = useState<File | undefined>(undefined);
   const [imagePreview, setImagePreview] = useState<string | undefined>(undefined);
 
@@ -32,11 +36,12 @@ function App() {
 
     const formData = new FormData();
     formData.append('file', file);
-    const response = await fetch('http://localhost:8080/', {
-      method: 'POST',
-      body: formData,
-    });
-    console.log(response);
+    api
+      .post('/upload', formData)
+      .then(({data}) => {
+        const id = data.id;
+        navigate(`/original/${id}`);
+      })
   }
 
   return (
