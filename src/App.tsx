@@ -1,61 +1,46 @@
 import {useState} from 'react'
 import './App.css'
 import {api} from "./Api.tsx";
-import {useNavigate} from "react-router-dom";
 
 function App() {
-  const navigate = useNavigate();
-
-  const [imageFile, setImageFile] = useState<File | undefined>(undefined);
-  const [imagePreview, setImagePreview] = useState<string | undefined>(undefined);
-
-  const removeImage = () => {
-    setImageFile(undefined);
-    setImagePreview(undefined);
-  }
-
-  const holdImage = (file: File | null | undefined) => {
-    if (!file) {
-      removeImage();
-      return;
-    }
-
-    setImageFile(file);
-
-    const fileRead = new FileReader();
-    fileRead.onload = function () {
-      setImagePreview(fileRead.result as string);
-    };
-
-    fileRead.readAsDataURL(file);
-  };
-
-  const uploadImageIfHeld = async (file: File | undefined) => {
-    if (!file)
-      return;
-
-    const formData = new FormData();
-    formData.append('file', file);
-    api
-      .post('/upload', formData)
-      .then(({data}) => {
-        const id = data.id;
-        navigate(`/original/${id}`);
-      })
-  }
+  const [image, setImage] = useState('');
+  const [prompt, setPrompt] = useState<string>()
 
   return (
     <>
       <h1>노려라 금손</h1>
-      <div>
-        {imagePreview && <img alt={imagePreview} src={imagePreview} width={250} height={250}/>}
-      </div>
-      <div>
+      <div
+        className={'items-center'}>
         <input
-          accept={"image/*"}
-          type="file"
-          onChange={(e) => holdImage(e.target.files?.item(0))}/>
-        <button onClick={() => uploadImageIfHeld(imageFile)}>Upload</button>
+          type="text"
+          placeholder="Prompt"
+          onChange={(e) => setPrompt(e.target.value)}/>
+        <button onClick={() => {
+          if (!prompt) {
+            alert("모든 항목을 입력해주세요")
+            return
+          }
+
+          api.post('/model/test', {prompt}, {
+            responseType: "arraybuffer"
+          })
+            .then(({data}) => {
+              const base64 = btoa(
+                new Uint8Array(data).reduce(
+                  (data, byte) => data + String.fromCharCode(byte),
+                  ''
+                )
+              )
+              setImage(base64)
+            })
+        }}>제출
+        </button>
+      </div>
+      <div
+        className={'max-w-fit content-center'}>
+        <img
+          src={`data:;base64,${image}`}
+          alt="Generated Image"/>
       </div>
     </>
   )
