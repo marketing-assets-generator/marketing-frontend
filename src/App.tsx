@@ -1,9 +1,10 @@
 import {useState} from 'react'
 import './App.css'
-import {api} from "./Api.tsx";
+import {api, baseUrl} from "./Api.tsx";
+import {downloadFile} from "./DownloadUtils.tsx";
 
 function App() {
-  const [image, setImage] = useState('');
+  const [imageUrl, setImageUrl] = useState<string | undefined>();
   const [prompt, setPrompt] = useState<string>()
 
   return (
@@ -21,27 +22,26 @@ function App() {
             return
           }
 
-          api.post('/model/test', {prompt}, {
-            responseType: "arraybuffer"
-          })
+          api.post('/modelOutputImages', {prompt},)
             .then(({data}) => {
-              const base64 = btoa(
-                new Uint8Array(data).reduce(
-                  (data, byte) => data + String.fromCharCode(byte),
-                  ''
-                )
-              )
-              setImage(base64)
+              const id = data.id;
+              const url = `${baseUrl}/modelOutputImages/${id}/bytes`
+              console.log(url)
+              setImageUrl(url)
             })
         }}>제출
         </button>
       </div>
-      <div
-        className={'max-w-fit content-center'}>
-        <img
-          src={`data:;base64,${image}`}
-          alt="Generated Image"/>
-      </div>
+      {
+        imageUrl &&
+          <div
+              className={'max-w-fit content-center'}>
+              <img
+                  src={imageUrl}
+                  alt="Generated Image"/>
+              <button onClick={() => downloadFile(imageUrl)}>Download</button>
+          </div>
+      }
     </>
   )
 }
