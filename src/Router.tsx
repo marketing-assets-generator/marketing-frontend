@@ -1,23 +1,30 @@
 import {createBrowserRouter} from "react-router-dom";
-import App from "./App.tsx";
-import OriginalImage from "./OriginalImage.tsx";
+import App from "./screens/App.tsx";
+import ModelOutputImage from "./screens/ModelOutputImage.tsx";
+import ImageModification from "./screens/ImageModification.tsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App/>,
-  }, {
-    path: "/original",
+  },
+  {
+    path: "/model-output",
     children: [
       {
-        path: ":originalImageId",
-        element: <OriginalImage/>
-      },
+        path: ":modelOutputImageId",
+        element: <ModelOutputImage/>
+      }
+    ]
+  },
+  {
+    path: "/modification",
+    children: [
       {
-        index: true,
-        element: <OriginalImage/>
-      },
-    ],
+        path: ":modelOutputImageModificationId",
+        element: <ImageModification/>
+      }
+    ]
   }
 ]);
 
