@@ -38,9 +38,17 @@ const ModelOutputImage = () => {
 
   return (
     <div className={"relative flex-col content-center"}>
-      <h1>Model Output Image</h1>
+      <h1>SIGMA</h1>
+      <div className={'w-512 content-start justify-start flex-row relative origin-left object-left text-left'}>
+        <text
+          className={"text-blue-500 cursor-pointer"}
+          onClick={() => navigate('/')}
+        >
+          처음으로
+        </text>
+      </div>
       <div
-        className={"w-512 h-512 relative"}>
+        className={"w-512 h-512 mt-5 relative"}>
         <img
           className="w-512 h-512 relative"
           src={imageUrl}
@@ -55,32 +63,40 @@ const ModelOutputImage = () => {
         </div>
       </div>
       <div
-        className={'content-center'}>
-        <button onClick={() => downloadFile(imageUrl)}>Download</button>
+        className={'content-center mt-2'}>
+        <button
+          className={'mr-2'}
+          onClick={clearCanvas}
+        >
+          Clear
+        </button>
+
+        <select
+          className={'mr-20'}
+          value={tool}
+          onChange={(e) => {
+            setTool(e.target.value);
+          }}
+        >
+          <option value="pen">Pen</option>
+          <option value="eraser">Eraser</option>
+        </select>
+
+        <button onClick={() => downloadFile(imageUrl, `generated-${modelOutputImageId}`)}>Download</button>
       </div>
-      <select
-        value={tool}
-        onChange={(e) => {
-          setTool(e.target.value);
-        }}
-      >
-        <option value="pen">Pen</option>
-        <option value="eraser">Eraser</option>
-      </select>
-      <input
-        type="text"
-        placeholder="Prompt"
-        onChange={(e) => setPrompt(e.target.value)}/>
-      <button
-        onClick={clearCanvas}
-      >
-        Clear
-      </button>
-      <button
-        onClick={uploadCanvas}
-      >
-        캔버스 업로드
-      </button>
+      <div
+        className={'content-center mt-2'}>
+        <input
+          className={'mr-2'}
+          type="text"
+          placeholder="수정할 프롬프트"
+          onChange={(e) => setPrompt(e.target.value)}/>
+        <button
+          onClick={uploadCanvas}
+        >
+          캔버스 업로드
+        </button>
+      </div>
     </div>
   );
 }

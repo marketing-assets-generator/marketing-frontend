@@ -66,9 +66,16 @@ const App = () => {
   return (
     <div
       className={'flex-col'}>
-      <h1>노려라 금손</h1>
+      <h1>SIGMA</h1>
       <div
-        className={'items-center'}>
+        className={'mt-5'}
+      >
+        <text
+        >힌트 이미지를 제공해주실 경우 더 예쁜 스티커를 생성할 수 있습니다.
+        </text>
+      </div>
+      <div
+        className={'w-512 relative items-center mt-5 justify-center content-center self-center'}>
         {imagePreview && <img alt={imagePreview} src={imagePreview} width={250} height={250}/>}
         <input
           accept={"image/*"}
@@ -77,10 +84,11 @@ const App = () => {
       </div>
       <div>
         <input
+          className={'mr-1'}
           type="text"
           placeholder="Prompt"
           onChange={(e) => setPrompt(e.target.value)}/>
-        <button onClick={createModelOutputImage}>최종 제출
+        <button onClick={createModelOutputImage}>생성
         </button>
       </div>
     </div>
